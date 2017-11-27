@@ -1,0 +1,489 @@
+% !TeX root = ../main.tex
+
+\section{Neighborhood-based Collaborative Filtering}
+\subsection{Introduction}
+\begin{frame}
+    \frametitle{Introduction}
+    \centering
+    \underline{\textbf{Collaborative Filtering}}
+    \begin{itemize}
+        \item \textbf{User-based}
+            \begin{itemize}
+                \item Many People like "The Godfather" should I watch it too?
+                \item Choose a number of users who like things I like and
+                      decide based on how much they liked it
+                \item If we used to like similar items in the past, we will continue to like similar items in the future
+            \end{itemize}
+        \item \textbf{Item-based}
+            \begin{itemize}
+                \item Is "Jurassic Park" a good choice based on movies I usually see?
+                \item Choose a number of movies that I have seen and share similar audience with "Jurassic Park",
+                then decide based on how much I liked the previous movies
+                \item If I liked these type of items in the past, I will probably also like those items
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+\begin{frame}[t]
+    \frametitle{Introduction}
+    \centering
+    \underline{\textbf{Advantages of Collaborative Filtering}}
+    \begin{center}
+        \begin{enumerate}
+            \item Simplicity
+            \item Justifiability
+            \item Efficiency
+            \item Stability
+        \end{enumerate}
+    \end{center}
+\end{frame}
+
+\subsection{Similarity Function Variants}
+\begin{frame}
+    \frametitle{Cosine Similarity}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+            cos(u,v) = \frac{\sum_{i \in \mathcal{I}_{uv}}r_{ui}r_{vi}}
+        		    {\sqrt{\sum_{i \in \mathcal{I}_{u}}r_{ui}^2}
+        		     \sqrt{\sum_{i \in \mathcal{I}_{v}}r_{vi}^2}}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{u}:$ The set of items that have been rated by user $u$
+            \item $\mathcal{I}_{v}:$ The set of items that have been rated by user $v$
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $r_{ui}:$ The rating that user $u$ gave to item $i$
+            \item $r_{vi}:$ The rating that user $v$ gave to item $i$
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+            cos(i,j) = \frac{\sum_{u \in \mathcal{U}_{ij}}r_{iu}r_{ju}}
+        		    {\sqrt{\sum_{u \in \mathcal{U}_{i}}r_{iu}^2}
+        		     \sqrt{\sum_{u \in \mathcal{U}_{j}}r_{ju}^2}}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{i}:$ The set of users that have rated item $i$
+            \item $\mathcal{U}_{j}:$ The set of users that have rated item $j$
+            \item $\mathcal{U}_{ij}:$ The set of users that have both rated items $i$ and $j$
+            \item $r_{iu}:$ The rating item $i$ received from user $u$
+            \item $r_{ju}:$ The rating item $j$ received from user $u$
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Modified Cosine Similarity}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+            MC(u,v) = \frac{\sum_{i \in \mathcal{I}_{uv}}r_{ui}r_{vi}}
+		   {\sqrt{\sum_{i \in \mathcal{I}_{uv}}r_{ui}^2}
+                    \sqrt{\sum_{i \in \mathcal{I}_{uv}}r_{vi}^2}}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $r_{ui}:$ The rating that user $u$ gave to item $i$
+            \item $r_{vi}:$ The rating that user $v$ gave to item $i$
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+            MC(i,j) = \frac{\sum_{u \in \mathcal{U}_{ij}}r_{iu}r_{ju}}
+		   {\sqrt{\sum_{u \in \mathcal{U}_{ij}}r_{iu}^2}
+                    \sqrt{\sum_{u \in \mathcal{U}_{ij}}r_{ju}^2}}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{ij}:$ The set of users that have both rated items $i$ and $j$
+            \item $r_{iu}:$ The rating item $i$ received from user $u$
+            \item $r_{ju}:$ The rating item $j$ received from user $u$
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Adjusted Cosine Similarity}
+    \vspace{-0.8cm}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+            \small
+            \begin{split}
+            &AC(u,v) = \frac{\sum_{i \in \mathcal{I}_{uv}}(r_{ui}-\bar{r_{i}})(r_{vi}-\bar{r_{i}})}
+        		    {\sqrt{\sum_{i \in \mathcal{I}_{uv}}(r_{ui}-\bar{r_{i}})^2}
+                             \sqrt{\sum_{i \in \mathcal{I}_{uv}}(r_{vi}-\bar{r_{i}})^2}} \\\\
+            &\bar{r_{i}} = \frac{\sum_{u \in \mathcal{U}_i}r_{iu}}
+         		        {\mathopen|\mathcal{U}_i\mathclose|}
+            \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $r_{ui}:$ The rating that user $u$ gave to item $i$
+            \item $r_{vi}:$ The rating that user $v$ gave to item $i$
+            \item $\mathcal{U}_{i}:$ The set of users that have rated item $i$
+            \item $\bar{r_{i}}:$ The mean rating of item $i$
+
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+            \small
+            \begin{split}
+            &AC(i,j) = \frac{\sum_{u \in \mathcal{U}_{ij}}(r_{iu}-\bar{r_{u}})(r_{ju}-\bar{r_{u}})}
+        		    {\sqrt{\sum_{u \in \mathcal{U}_{ij}}(r_{iu}-\bar{r_{u}})^2}
+                             \sqrt{\sum_{u \in \mathcal{U}_{ij}}(r_{ju}-\bar{r_{u}})^2}} \\\\
+            &\bar{r_{u}} = \frac{\sum_{i \in \mathcal{I}_u}r_{ui}}
+         		        {\mathopen|\mathcal{I}_u\mathclose|}
+            \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{ij}:$ The set of users that have both rated items $i$ and $j$
+            \item $r_{iu}:$ The rating item $i$ received from user $u$
+            \item $r_{ju}:$ The rating item $j$ received from user $u$
+            \item $\mathcal{I}_{u}:$ The set of items that have been rated by user $u$
+            \item $\bar{r_{u}}:$ The mean rating of user $u$
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Modified Adjusted Cosine Similarity}
+    \vspace{-0.6cm}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+        \footnotesize
+        \begin{split}
+        &MAC(u,v) = \frac{\sum_{i \in \mathcal{I}_{uv}}(r_{ui}-\bar{r_{i}})(r_{vi}-\bar{r_{i}})}
+                         {\sqrt{\sum_{i \in \mathcal{I}_{u}}(r_{ui}-\bar{r_{i}})^2}
+                          \sqrt{\sum_{i \in \mathcal{I}_{v}}(r_{vi}-\bar{r_{i}})^2}} \\\\
+        &\bar{r_{i}} = \frac{\sum_{u \in \mathcal{U}_i}r_{iu}}
+                            {\mathopen|\mathcal{U}_i\mathclose|}
+        \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{u}:$ The set of items that have been rated by user $u$
+            \item $\mathcal{I}_{v}:$ The set of items that have been rated by user $v$
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $r_{ui}:$ The rating that user $u$ gave to item $i$
+            \item $r_{vi}:$ The rating that user $v$ gave to item $i$
+            \item $\mathcal{U}_{i}:$ The set of users that have rated item $i$
+            \item $\bar{r_{i}}:$ The mean rating of item $i$
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+        \footnotesize
+        \begin{split}
+        &MAC(i,j) = \frac{\sum_{u \in \mathcal{U}_{ij}}(r_{iu}-\bar{r_{u}})(r_{ju}-\bar{r_{u}})}
+                         {\sqrt{\sum_{u \in \mathcal{U}_{i}}(r_{iu}-\bar{r_{u}})^2}
+                          \sqrt{\sum_{u \in \mathcal{U}_{j}}(r_{ju}-\bar{r_{u}})^2}} \\\\
+        &\bar{r_{u}} = \frac{\sum_{i \in \mathcal{I}_u}r_{ui}}
+                            {\mathopen|\mathcal{I}_u\mathclose|}
+        \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{i}:$ The set of users that have rated item $i$
+            \item $\mathcal{U}_{j}:$ The set of users that have rated item $j$
+            \item $\mathcal{U}_{ij}:$ The set of users that have both rated items $i$ and $j$
+            \item $r_{iu}:$ The rating item $i$ received from user $u$
+            \item $r_{ju}:$ The rating item $j$ received from user $u$
+            \item $\mathcal{I}_{u}:$ The set of items that have been rated by user $u$
+            \item $\bar{r_{u}}:$ The mean rating of user $u$
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Pearson Correlation Coefficient}
+    \vspace{-0.8cm}
+    \begin{columns}
+        \hspace{-7mm}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+            \small
+            \begin{split}
+            &PCC(u,v) = \frac{\sum_{i \in \mathcal{I}_{uv}}(r_{ui}-\bar{r_{u}})(r_{vi}-\bar{r_{v}})}
+                             {\sqrt{\sum_{i \in \mathcal{I}_{uv}}(r_{ui}-\bar{r_{u}})^2}
+                              \sqrt{\sum_{i \in \mathcal{I}_{uv}}(r_{vi}-\bar{r_{v}})^2}} \\\\
+            &\bar{r_{u}} = \frac{\sum_{i \in \mathcal{I}_u}r_{ui}}
+                                {\mathopen|\mathcal{I}_u\mathclose|}
+        \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $r_{ui}:$ The rating that user $u$ gave to item $i$
+            \item $r_{vi}:$ The rating that user $v$ gave to item $i$
+            \item $\bar{r_{u}}:$ The mean rating of user $u$
+
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+            \small
+            \begin{split}
+            &PCC(i,j) = \frac{\sum_{u \in \mathcal{U}_{ij}}(r_{iu}-\bar{r_{i}})(r_{ju}-\bar{r_{j}})}
+                             {\sqrt{\sum_{u \in \mathcal{U}_{ij}}(r_{iu}-\bar{r_{i}})^2}
+                              \sqrt{\sum_{u \in \mathcal{U}_{ij}}(r_{ju}-\bar{r_{j}})^2}} \\\\
+            &\bar{r_{i}} = \frac{\sum_{u \in \mathcal{U}_i}r_{iu}}
+                                {\mathopen|\mathcal{U}_i\mathclose|}
+        \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{ij}:$ The set of users that have both rated items $i$ and $j$
+            \item $r_{iu}:$ The rating item $i$ received from user $u$
+            \item $r_{ju}:$ The rating item $j$ received from user $u$
+            \item $\bar{r_{i}}:$ The mean rating of item $i$
+
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Modified Pearson Correlation Coefficient 1}
+    \vspace{-0.8cm}
+    \begin{columns}
+        \hspace{-7mm}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+            \footnotesize
+            \begin{split}
+    &MPCC1(u,v) = \frac{\sum_{i \in \mathcal{I}_{uv}}(r_{ui}-\tilde{r_{u}})(r_{vi}-\tilde{r_{v}})}
+                       {\sqrt{\sum_{i \in \mathcal{I}_{uv}}(r_{ui}-\tilde{r_{u}})^2}
+                        \sqrt{\sum_{i \in \mathcal{I}_{uv}}(r_{vi}-\tilde{r_{v}})^2}} \\\\
+      &\tilde{r_{u}} = \frac{\sum_{i \in \mathcal{I}_{uv}}r_{ui}}
+                          {\mathopen|\mathcal{I}_{uv}\mathclose|}
+            \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $r_{ui}:$ The rating that user $u$ gave to item $i$
+            \item $r_{vi}:$ The rating that user $v$ gave to item $i$
+            \item $\tilde{r_{u}}:$ The mean rating of user $u$
+
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+            \footnotesize
+            \begin{split}
+            &MPCC1(i,j) = \frac{\sum_{u \in \mathcal{U}_{ij}}(r_{iu}-\tilde{r_{i}})(r_{ju}-\tilde{r_{j}})}
+                             {\sqrt{\sum_{u \in \mathcal{U}_{ij}}(r_{iu}-\tilde{r_{i}})^2}
+                              \sqrt{\sum_{u \in \mathcal{U}_{ij}}(r_{ju}-\tilde{r_{j}})^2}} \\\\
+            &\tilde{r_{i}} = \frac{\sum_{u \in \mathcal{U}_i}r_{iu}}
+                                {\mathopen|\mathcal{U}_i\mathclose|}
+        \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{ij}:$ The set of users that have both rated items $i$ and $j$
+            \item $r_{iu}:$ The rating item $i$ received from user $u$
+            \item $r_{ju}:$ The rating item $j$ received from user $u$
+            \item $\tilde{r_{i}}:$ The mean rating of item $i$
+
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Modified Pearson Correlation Coefficient 2}
+    \vspace{-0.8cm}
+    \begin{columns}
+        \hspace{-7mm}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+            \footnotesize
+            \begin{split}
+            &MPCC2(u,v) = \frac{\sum_{i \in \mathcal{I}_{uv}}(r_{ui}-\bar{r_{u}})(r_{vi}-\bar{r_{v}})}
+                             {\sqrt{\sum_{i \in \mathcal{I}_{u}}(r_{ui}-\bar{r_{u}})^2}
+                              \sqrt{\sum_{i \in \mathcal{I}_{v}}(r_{vi}-\bar{r_{v}})^2}} \\\\
+            &\bar{r_{u}} = \frac{\sum_{i \in \mathcal{I}_u}r_{ui}}
+                                {\mathopen|\mathcal{I}_u\mathclose|}
+        \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{u}:$ The set of items that have been rated by user $u$
+            \item $\mathcal{I}_{v}:$ The set of items that have been rated by user $v$
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $r_{ui}:$ The rating that user $u$ gave to item $i$
+            \item $r_{vi}:$ The rating that user $v$ gave to item $i$
+            \item $\bar{r_{u}}:$ The mean rating of user $u$
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+            \footnotesize
+            \begin{split}
+            &MPCC2(i,j) = \frac{\sum_{u \in \mathcal{U}_{ij}}(r_{iu}-\bar{r_{i}})(r_{ju}-\bar{r_{j}})}
+                             {\sqrt{\sum_{u \in \mathcal{U}_{i}}(r_{iu}-\bar{r_{i}})^2}
+                              \sqrt{\sum_{u \in \mathcal{U}_{j}}(r_{ju}-\bar{r_{j}})^2}} \\\\
+            &\bar{r_{i}} = \frac{\sum_{u \in \mathcal{U}_i}r_{iu}}
+                                {\mathopen|\mathcal{U}_i\mathclose|}
+        \end{split}
+        \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{i}:$ The set of users that have rated item $i$
+            \item $\mathcal{U}_{j}:$ The set of users that have rated item $j$
+            \item $\mathcal{U}_{ij}:$ The set of users that have both rated items $i$ and $j$
+            \item $r_{iu}:$ The rating item $i$ received from user $u$
+            \item $r_{ju}:$ The rating item $j$ received from user $u$
+            \item $\bar{r_{i}}:$ The mean rating of item $i$
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Mean Squared Difference}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+        MSD(u,v) = \frac{\mathopen|\mathcal{I}_{uv}\mathclose|}
+                        {\sum_{i \in \mathcal{I}_{uv}}(r_{ui}-r_{vi})^2}
+    \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $r_{ui}:$ The rating that user $u$ gave to item $i$
+            \item $r_{vi}:$ The rating that user $v$ gave to item $i$
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+        MSD(i,j) = \frac{\mathopen|\mathcal{U}_{ij}\mathclose|}
+                        {\sum_{u \in \mathcal{U}_{ij}}(r_{iu}-r_{ju})^2}
+    \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{ij}:$ The set of users that have both rated items $i$ and $j$
+            \item $r_{iu}:$ The rating item $i$ received from user $u$
+            \item $r_{ju}:$ The rating item $j$ received from user $u$
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Mean Absolute Difference}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+        MAD(u,v) = \frac{\mathopen|\mathcal{I}_{uv}\mathclose|}
+                        {\sum_{i \in \mathcal{I}_{uv}}\mathopen|r_{ui}-r_{vi}\mathclose|}
+    \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $r_{ui}:$ The rating that user $u$ gave to item $i$
+            \item $r_{vi}:$ The rating that user $v$ gave to item $i$
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+        MAD(i,j) = \frac{\mathopen|\mathcal{U}_{ij}\mathclose|}
+                        {\sum_{u \in \mathcal{U}_{ij}}\mathopen|r_{iu}-r_{ju}\mathclose|}
+    \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{ij}:$ The set of users that have both rated items $i$ and $j$
+            \item $r_{iu}:$ The rating item $i$ received from user $u$
+            \item $r_{ju}:$ The rating item $j$ received from user $u$
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Jaccard Coefficient}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{User-based}}
+        \begin{equation*}
+    J(u,v) = \frac{\mathopen|\mathcal{I}_{uv}\mathclose|}
+                  {\mathopen|\mathcal{I}_{u}\mathclose| +
+		   \mathopen|\mathcal{I}_{v}\mathclose| -
+		   \mathopen|\mathcal{I}_{uv}\mathclose|}
+       \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{I}_{u}:$ The set of items that have been rated by user $u$
+            \item $\mathcal{I}_{v}:$ The set of items that have been rated by user $v$
+            \item $\mathcal{I}_{uv}:$ The set of items that users $u$ and $v$ rated in common
+            \item $\mathopen|\mathcal{I}_{u}\mathclose|:$ The number of items in set $\mathcal{I}_{u}$
+            \item $\mathopen|\mathcal{I}_{v}\mathclose|:$ The number of items in set $\mathcal{I}_{v}$
+            \item $\mathopen|\mathcal{I}_{uv}\mathclose|:$ The number of items in set $\mathcal{I}_{uv}$
+        \end{itemize}
+        \column{0.5\textwidth}
+        \centering
+        \underline{\textbf{Item-based}}
+        \begin{equation*}
+    J(i,j) = \frac{\mathopen|\mathcal{U}_{ij}\mathclose|}
+                  {\mathopen|\mathcal{U}_{i}\mathclose| +
+		   \mathopen|\mathcal{U}_{j}\mathclose| -
+		   \mathopen|\mathcal{U}_{ij}\mathclose|}
+       \end{equation*}
+        \tiny
+        \begin{itemize}
+            \item $\mathcal{U}_{i}:$ The set of users that have rated item $i$
+            \item $\mathcal{U}_{j}:$ The set of users that have rated item $j$
+            \item $\mathcal{U}_{ij}:$ The set of users that rated items $i$ and $j$ in common
+            \item $\mathopen|\mathcal{U}_{i}\mathclose|:$ The number of users in set $\mathcal{U}_{i}$
+            \item $\mathopen|\mathcal{U}_{j}\mathclose|:$ The number of users in set $\mathcal{U}_{j}$
+            \item $\mathopen|\mathcal{U}_{ij}\mathclose|:$ The number of users in set $\mathcal{U}_{ij}$
+        \end{itemize}
+    \end{columns}
+\end{frame}
+\subsection{K-Nearest Neighbors Algorithm}
+\begin{frame}
+    \frametitle{K-Nearest Neighbors Algorithm}
+    \only<1>{
+        \vspace{2cm}
+        \centering
+        \textbf{The K-Nearest Neighbors algorithm}
+    }
+    \vspace{-1cm}
+    \begin{itemize}
+	\item[]<2-> \textbf{Step 1:} Select users that have rated $Item_B$.
+	\item[]<3-> \textbf{Step 2:} Compute the similarities between $User_A$ and the users that have
+	rated $Item_B$.
+	\item[]<4-> \textbf{Step 3:}  Sort the similarities in descending order.
+	\item[]<5-> \textbf{Step 4:}  Choose how many neighbors will contribute in the rating
+	prediction by selecting the top $\mathcal{K}$ out of all the available
+	neighbors($\mathcal{K}$ can be in range [1 - $\mathcal{N}$] where $\mathcal{N}$ is all
+	the available neighbors).
+	\item[]<6-> \textbf{Step 5:} Use an aggregation formula to calculate the rating prediction of
+	$User_A$ to $Item_B$. In this case the weighted sum is used.
+\begin{equation*}
+	\hat{r}(User_A,Item_B) = \frac{\sum_{u \in \mathcal{K}}{similarity(User_A,User_u) * r(User_u,Item_B)}}
+						    {\sum_{u \in \mathcal{K}}{\mathopen|similarity(User_A,User_u)\mathclose|}}
+\end{equation*}
+\end{itemize}
+\end{frame}

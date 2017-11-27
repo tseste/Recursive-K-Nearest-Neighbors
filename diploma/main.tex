@@ -1,0 +1,120 @@
+%!TeX spellcheck = en-UK, el-GR
+%this tex file is compatible with lualatex compiler because of the fontspec package usage
+\documentclass[11pt]{report}
+% geometry package is used to size the paper
+\usepackage[a4paper,width=170mm,top=25mm,bottom=25mm,headheight=15pt]{geometry}
+% natbib package is used to format the bibliography
+\usepackage[round]{natbib}
+% a bibliography styler
+\bibliographystyle{unsrtnat}
+% Bibliography in table of contents
+\usepackage[nottoc]{tocbibind}
+% fancyhdr is used to format the headers of the paper
+\usepackage{fancyhdr}
+% the header styler
+\pagestyle{fancy}
+% fncychap is used to format the chapter titles
+\usepackage[Rejne]{fncychap}
+% fontspec package is used to choose the Arial font
+\usepackage{fontspec}
+% set font to Arial
+\setmainfont[Ligatures=TeX]{Arial}
+% hyperref package is used to reference pages, chapters, figures etc in the paper
+\usepackage[hidelinks,linktocpage]{hyperref}
+% ragged2e package is used for the \justified format
+\usepackage{ragged2e}
+% make space between each line 1.5
+\renewcommand{\baselinestretch}{1.5}
+% graphicx package is used to input photos in the paper
+\usepackage{graphicx}
+%bfloat package is used to size tables
+\usepackage{float}
+% amsmath packages is used for the math formulas in the paper
+\usepackage{amsmath}
+% diagbox package is used to format the first row/column header in one cell
+\usepackage{diagbox}
+% color package is used for text coloring
+\usepackage{color}
+% use multiple languages
+\usepackage[greek,english]{babel}
+
+% set the path to find the images for the graphicx package
+\graphicspath{ {images/} }
+
+\title{
+	{\large
+	 University of the Aegean\\
+	 School of Engineering\\
+	 Department of Financial and Management Engineering}\\
+	 \vfill
+	{\includegraphics{cover/cover.eps}}\\
+	\vfill
+	{«Recursive Nearest Neighbors Methods in Recommender Systems»}\\
+}
+\author{Stylianos Tsesmetzis\\ {\small Supervisor: Nicholas Ampazis}}
+\date{{Chios,} 31/10/2017}
+\begin{document}
+\pagenumbering{Roman}
+\maketitle
+\addcontentsline{toc}{chapter}{Cover}
+
+\clearpage
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\input{chapters/abstract}
+
+\begin{otherlanguage}{greek}
+\chapter*{\abstractname}
+\addcontentsline{toc}{chapter}{\abstractname}
+\input{chapters/abstract_el}
+\end{otherlanguage}
+
+\chapter*{Dedication}
+\addcontentsline{toc}{chapter}{Dedication}
+\begin{center}
+	To my parents,\\
+	Stergios and Stergiani\\
+	and my siblings,\\
+	Stratos and Maria.
+\end{center}
+
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+\input{chapters/acknowledgements}
+
+\tableofcontents\addcontentsline{toc}{chapter}{\contentsname}
+\listoffigures
+\listoftables
+\cleardoublepage\pagenumbering{arabic}
+\chapter{Introduction}
+\label{chap:1}
+\input{chapters/chapter_1}
+
+\chapter{Neighborhood-based CF}
+\label{chap:2}
+\input{chapters/chapter_2}
+
+\chapter{Recursive K-Nearest Neighbors}
+\label{chap:3}
+\input{chapters/chapter_3}
+
+\chapter{Evaluation}
+\label{chap:4}
+\input{chapters/chapter_4}
+
+\chapter{Conclusion and future work}
+\label{chap:5}
+\input{chapters/chapter_5}
+
+\bibliography{references}
+
+\appendix
+\chapter{Source Code}
+\label{chap:appendix_src}
+\input{chapters/appendix_1}
+
+\chapter{Experimental Results}
+\label{chap:appendix_results}
+\input{chapters/appendix_2}
+\end{document}

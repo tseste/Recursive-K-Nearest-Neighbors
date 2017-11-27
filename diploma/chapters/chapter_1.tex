@@ -1,0 +1,205 @@
+% !TeX root = ../main.tex
+
+\section{Recommender systems overview}
+A Recommender System (RS) is defined as a software that analyses the behavior
+and activities of users, for example as in an online retail platform like
+Amazon \citep{amazon}, and provides them with content relevant to their
+interests \citep{Ricci, Jannach}. In RSs the term "user" means the customer
+that interacts with the online platform. To find content that seems relevant
+to the users an RS uses algorithms that help it make decisions on what
+items to suggest \citep{Ricci}. The term "item" is used to denote anything
+that the RS recommends to a user. Recommender systems can be used in many domains.
+A list of the most popular recommender platforms is shown in \autoref{table:Recommenders Examples}:
+
+\begin{table}[H]
+\centering
+\caption{Examples of products recommended by various real-world recommender
+         systems \citep{Aggarwal}}
+\label{table:Recommenders Examples}
+\begin{tabular}{ |c|c| }
+\hline
+\textbf{System} & \textbf{Product Goal}\\
+\hline
+Amazon.com & Books and other products\\
+\hline
+Netflix & DVDs, Streaming Video\\
+\hline
+Jester & Jokes\\
+\hline
+GroupLens & News\\
+\hline
+MovieLens & Movies\\
+\hline
+last.fm & Music\\
+\hline
+Google News & News\\
+\hline
+Google Search & Advertisements\\
+\hline
+Facebook & Friends, Advertisements\\
+\hline
+Pandora & Music\\
+\hline
+YouTube & Online videos\\
+\hline
+Tripadvisor & Travel products\\
+\hline
+IMDb & Movies\\
+\hline
+\end{tabular}
+\end{table}
+
+In many of these RSs, a rating system is used in order to provide item
+recommendations to their users. A rating system is a feedback method
+(e.g. number of stars) typically in the interval [1 - 5] which indicates the
+level of satisfaction about an item they have bought \citep{Aggarwal}.
+These ratings are stored in a matrix, namely the "ratings matrix", where
+each row represents a user's ratings to each item and each column represents
+an item's ratings by each user.
+After the users buy a book, hear a song or watch a movie they can rate it so
+other users know how much they like or dislike a particular item.
+
+After many years of research, a lot of algorithms have been introduced to
+increase the efficiency of the recommender systems. These algorithms can be
+broadly assigned to the following techniques:
+
+\begin{itemize}
+	\item \textbf{Collaborative Filtering (CF):} Recommender systems using CF
+    techniques are based on the assumption that users who used to like similar
+    items in the past will continue to like similar items in the future
+    \citep{Jannach}. The basic source of information for CF is the rating
+    system. It uses this information for two reasons.
+    The first is to use the known ratings in the system to predict the
+    missing ratings. The second is to use the predicted ratings to
+    recommend the most suitable items for each user in terms of relevance.
+    CF can be separated in two distinct types, Memory-based and Model-based:\\
+	\begin{enumerate}
+    	\item \textbf{Memory-Based:} The motivation for this name comes from
+        the fact that this method keeps the rating database in memory and uses
+        it directly for generating the recommendations \citep{Jannach}.
+    	This method is also called neighborhood-based because it uses the
+        known ratings to find similarities between users or items in order to
+        generate predictions.
+    	When the similarities refer to users the method it is called user-based
+        collaborative filtering. When they refer to items it is called
+        item-based collaborative filtering.
+    	In user-based collaborative filtering the ratings predictions
+        are derived from filtering the most similar users to the active user
+        (the user that the RS is calculating the predictions for) that
+        have also interacted with the item the prediction is calculated for.
+        Then, with respect to the similarity of those users and their ratings
+        on the specific item, an aggregation is calculated as the prediction
+        of the rating for this item that the active user would give.
+
+    	\item \textbf{Model-Based:} In model-based methods, machine learning
+    	and data mining methods are used in the context of predictive models.
+        In cases where the model is parameterized, the parameters of this
+        model are learned within the context of an optimization framework.
+        Some examples of such model-based methods include decision trees,
+        rule-based models, Bayesian methods and latent factor models.
+        Many of these methods, such as latent factor models, have a high
+        level of coverage even for sparse ratings matrices \citep{Aggarwal}.
+        The term "sparse ratings matrix" means that many of these ratings are missing
+        from the ratings matrix,
+        as it is unlikely that every user has rated every item.
+	\end{enumerate}
+	\item \textbf{Content-based Recommender System:} Another way to extract
+    information about what a user might be interested in and provide
+    relevant recommendations is by observing the content this user spends more
+    time on. Instead of trying to match the patterns of different users ratings
+    like in CF, this method focuses on what attributes
+    it can extract from the items the user is looking at. The brand name in
+    a shirt, the genre or actors in a movie, the actual text of a book are
+    all very strong indicators that the user is looking for something
+    specific. Similarities in this case are formed from the common attributes
+    of the existing items in the platform. A content-based approach is
+    also very useful when a new user enters the platform where CF suffers
+    from the cold start problem (The recommender system is not aware of
+    any of the new user's preferences) \citep{Aggarwal}.
+	\item \textbf{Knowledge-based Recommender Systems:} This type of RS differs from
+    the aforementioned techniques as it does not rely neither on user or item
+    collaborations nor on item attributes to generate recommendations. Instead,
+    this RS interactively tries to guide the user through the choices, that they would
+    make most sense to them at a particular time, by forming similarities between the
+    user's requirements and the available items \citep{Jannach}. The reason for such an RS can be
+    understood for example when a user wants to buy a house. The preferences of a user evolve,
+    for example family or lifestyle situations would led the user to different decisions at
+    that particular time. If a CF recommendation was given instead, it might match the user
+    with houses of irrelevant specifications.
+	\item \textbf{Hybrid Recommender Systems:} These types of RSs are based on the
+    combination of the above mentioned techniques. A hybrid system combining e.g.
+    techniques A and B tries to use the advantages of A to fix the
+    disadvantages of B. \citep{Ricci}
+\end{itemize}
+
+In summary, every recommender system's goal is to increase the profit of the
+company that is using it. To better define this goal in technical parts,
+it was split in more meaningful subgoals \citep{Aggarwal}.
+These subgoals are:
+
+\begin{enumerate}
+  \item \textbf{Relevance}: In order to drive users to buy the company's items, the
+  recommendations must be relevant to users' preferences.
+  \item \textbf{Novelty}: Blockbusters in every domain are easy to be found.
+  A recommender's job is to surprise the user with items that this user would
+  like but in the most cases has never heard of. As \citep{Fleder} argues,
+  recommending popular items over and over may bore the user resulting in
+  sales decrease.
+  \item \textbf{Serendipity (pleasant surprise)}: Recommending items for which there
+  is a high chance that the user would like it is one thing. Recommending items
+  almost irrelevant to that user but suspecting the user would love this is a
+  serendipity. Sometimes recommender systems try to broaden users' choices
+  by selecting alternatives to the users' tastes. In other words they try to
+  avoid overspecialization \citep{Jannach}.
+  \item \textbf{Recommendation diversity}: When the recommender system knows
+  e.g. that a user likes books about Recommender Systems from a specific author,
+  recommending only these books and from only this author wouldn't mean that the
+  user is interested in buying more of those. For example, a book about
+  Linear Algebra or Programming might also catch this user's interest.
+\end{enumerate}
+
+\section{Purpose}
+In this thesis we will focus on the neighborhood-based CF and how to overcome some
+of its drawbacks. This method's drawbacks are mainly:
+\begin{enumerate}
+    \item \textbf{Scale:} New users and items enter the recommendation system everyday.
+    That means that the system has to form similarities between the new user and the
+    already existing users or the new item and the already existing items and make
+    predictions. For a video streaming company like Netflix \citep{netflix}, with over
+    100 million users and more than 10 thousand movies and TV shows, regularly updating
+    similarities between users would use unreasonable computing resources. That
+    would also mean recalculating over 10 billion rating predictions.
+    \item \textbf{Sparse data:} It is very unlikely that every user has rated
+    every item. That means that a lot of ratings are missing from the ratings matrix.
+    That also means that it is impossible to form similarities between all users
+    or all items and if, e.g. a user does not have rated items in common with many
+    other users, it will lead to the RS not being able to make predictions for
+    that user for many items.
+    \item \textbf{Cold start:} The RS has no information on how a user rates or
+    an item is being rated on users and items that have just entered the system. Therefore,
+    until users rate items or items receive ratings by users, the RS has to
+    ignore them because it is not able to form any similarities.
+\end{enumerate}
+The first objective in this thesis is to explore ways to generate more rating
+predictions to overcome the drawback of sparse data. For that purpose we will use the
+Epinions dataset \citep{Massa}. It contains 40163 users and 139738 items and
+664824 ratings. The sparsity percentage which is given by the formula
+$sparsity\ percentage = \frac{total\ possible\ ratings - current\ ratings}{total\ possible\ ratings}$
+, where\\$total\ possible\ ratings = total\ users*total\ items$, is 0,99988154. This means that a
+typical collaborative filtering method like the K-Nearest Neighbors(KNN) algorithm
+\citep{schafer2007collaborative} that will be discussed in \autoref{chap:2}
+would fail to find a lot of similarities between users or items and generate
+predictions. The second objective is to keep a relatively low error on
+rating predictions with a new neighborhood-based CF algorithm that will be later defined.
+
+\section{Approach}
+In this thesis a neighborhood-based CF algorithm will be proposed in \autoref{chap:3}
+that is called Recursive K-Nearest Neighbors. This method tries to overcome the limitations of
+the memory-based collaborative filtering method mentioned above.
+The algorithm is a novel approach, in the sense that is able of predicting ratings that
+normal KNN algorithm would fail due to lack of
+similarities. This algorithm is tested with a variety of similarity metrics that will
+be discussed in \autoref{chap:2} and the accuracy for each metric is evaluated
+with four different cost functions, namely Root Mean Squared Error(RMSE), Mean Absolute
+Error(MAE), Root Mean Squared User Error(RMSUE) and Mean Absolute User
+Error(MAUE) in \autoref{chap:4}.

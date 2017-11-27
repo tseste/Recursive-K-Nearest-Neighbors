@@ -1,0 +1,93 @@
+\documentclass[11pt,aspectratio=169]{beamer}
+\usetheme{Warsaw}
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{Arial}
+\usepackage{amsmath}
+\usepackage{diagbox}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{varwidth}
+\graphicspath{ {images/} }
+\usepackage{tikz}
+
+\usebackgroundtemplate{%
+\tikz\node[opacity=0.2,inner sep=0] {\includegraphics[height=\paperheight,width=\paperwidth]{background.png}};}
+\setbeamertemplate{title page}[default][colsep=-4bp,rounded=true,shadow=false]
+\AtBeginDocument{
+    \pgfdeclareverticalshading{beamer@topshade}{0}{%
+        color(0pt)=(black);
+        color(4pt)=(black!50!bg)
+    }
+}
+
+\title[Recursive Nearest Neighbors Methods in Recommender Systems \hspace{8mm}\insertframenumber/\inserttotalframenumber]{Recursive Nearest Neighbors Methods in Recommender Systems}
+\author[Stylianos Tsesmetzis]{Stylianos Tsesmetzis\\{\small Supervisor: Nicholas Ampazis}}
+\institute
+{
+\includegraphics[height=1cm,width=1cm]{cover.png}\\
+ University of the Aegean\\
+ School of Engineering\\
+  Department of Financial and Management Engineering
+}\date{October 31, 2017}
+
+\subject{Recommender Systems}
+
+\AtBeginSection
+{\begin{frame}{Table of Contents}
+\vspace{-1cm}
+\tableofcontents[currentsection,hideothersubsections]
+\end{frame}}
+
+\begin{document}
+%------------------------------------------------------------------Title------------------------------------------------------------------------------------------------------------
+\begin{frame}
+\titlepage
+\end{frame}
+\addtobeamertemplate{frametitle}{}{%
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,yshift=-40pt] at (current page.north east) {\includegraphics[height=0.6cm]{cover.png}};
+\end{tikzpicture}}
+%-------------------------------------------------------------------ToC-------------------------------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Table of Contents}
+\vspace{-1cm}
+\tableofcontents[hideallsubsections]
+\end{frame}
+%---------------------------------------------------------------Introduction--------------------------------------------------------------------------------------------------------
+\input{sections/section_1}
+%-----------------------------------------------------------Neighborhood-based CF---------------------------------------------------------------------------------------------------
+\input{sections/section_2}
+%--------------------------------------------------------------Recursive KNN--------------------------------------------------------------------------------------------------------
+\input{sections/section_3}
+%-----------------------------------------------------------------Results-----------------------------------------------------------------------------------------------------------
+\input{sections/section_4}
+%---------------------------------------------------------------Conclusion----------------------------------------------------------------------------------------------------------
+\section{Conclusion and Future Work}
+\begin{frame}
+    \frametitle{Conclusion}
+    \begin{itemize}
+        \item A novel recursive approach for Neighborhood-based CF
+        \item 25\% increase in rating predictions
+        \item Decent Results in User-based approach
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Future Work}
+    \begin{itemize}
+        \item Further use of similarity information
+        \item Similarity re-computations including predictions
+        \item Different prediction models
+    \end{itemize}
+\end{frame}
+%-----------------------------------------------------------------Q & A-------------------------------------------------------------------------------------------------------------
+\section{Q \& A}
+\begin{frame}
+    \frametitle{Q \& A}
+    \centering
+    \textbf{Any Questions?}
+\end{frame}
+\begin{frame}
+    \centering
+    \textbf{Thank You!}
+\end{frame}
+\end{document}

@@ -1,0 +1,32 @@
+% !TeX root = ../main.tex
+
+\section{Conclusion}
+In this thesis a novel approach was proposed in the context of neighborhood-based
+collaborative filtering. This approach managed to overcome the limitation
+of sparsity that prevented the rating prediction of many user-item pairs.
+In fact, it accomplished an average of 25\% increase in the amount of ratings that could be
+predicted. The results showed that for Recursive-KNN to be efficient,
+the value of $\mathcal{K}$ that indicates the users that will be used to make the final prediction
+for the user-item pair should be a large number. Another indication we got from the
+results of the Recursive-KNN is that the $\mathcal{M}$ parameter should be low, as
+$\mathcal{M}=3$ yielded the best score in the most cases. The user-based approach was more
+efficient with this particular data set. Cosine similarity, Modified cosine
+similarity and Jaccard coefficient created the most efficient similarities for
+the trained model.
+\section{Future Work}
+To consider Recursive-KNN as a good option for rating predictions, more tests
+should be done in order to optimize its accuracy.
+\begin{itemize}
+    \item[] \textbf{Similarity information:} For these experiments only the
+    positive similarities were kept in order to provide predictions. As a
+    further study we will properly use all the available information given
+    by each similarity, including the negative similarities, and how to
+    properly utilize them.
+    \item[] \textbf{Similarity re-computation:} After the computations of the KNN algorithm
+    we can try to include the predictions in the ratings matrix in order to re-calculate the similarities
+    between users or items and test how much more predictions we can further
+    find and how much this will affect the accuracy.
+    \item[] \textbf{Prediction formula:} For these experiments we only used
+    the weighted sum formula to calculate the predictions. We should see
+    if we can get any better results by using different formulas.
+\end{itemize}
